@@ -1,19 +1,17 @@
 package me.urbanfaust.easy_compress
 
-import javafx.event.Event
 import javafx.fxml.FXML
+import javafx.fxml.FXMLLoader
 import javafx.fxml.Initializable
-import javafx.scene.control.Button
-import javafx.scene.control.CheckBox
-import javafx.scene.control.ChoiceBox
-import javafx.scene.control.TextField
+import javafx.scene.control.*
 import javafx.stage.DirectoryChooser
 import javafx.stage.FileChooser
 import me.urbanfaust.easy_compress.data.*
 import me.urbanfaust.easy_compress.data_save.Preset
 import me.urbanfaust.easy_compress.data_save.PresetRegistry
 import me.urbanfaust.easy_compress.data_save.SettingsManager
-import me.urbanfaust.easy_compress.data_save.StandardPresets
+import me.urbanfaust.easy_compress.util.Logger
+import me.urbanfaust.easy_compress.view.PresetDialog
 import net.bramp.ffmpeg.FFmpeg
 import net.bramp.ffmpeg.FFmpegExecutor
 import net.bramp.ffmpeg.FFprobe
@@ -43,6 +41,10 @@ class MainController : Initializable {
     private lateinit var encodingVideoBitRateTextField: TextField
     @FXML
     private lateinit var settingsFFmpegPathTextField: TextField
+    @FXML
+    private lateinit var saveDialogFileName: TextField
+    @FXML
+    private lateinit var saveDialogPresetName: TextField
 
     /*--CHOISE BOXES---*/
     @FXML
@@ -67,6 +69,10 @@ class MainController : Initializable {
     private lateinit var encodingStartButton: Button
     @FXML
     private lateinit var onFindManualyFFmpegButton: Button
+    @FXML
+    private lateinit var saveDialogSavePreset: Button
+    @FXML
+    private lateinit var encodingSavePresetButton: Button
 
     /*--CHECK BOXES---*/
     @FXML
@@ -77,6 +83,8 @@ class MainController : Initializable {
     private lateinit var encodingSubtitlesCheckBox: CheckBox
     @FXML
     private lateinit var encodingExperimentalCheckBox: CheckBox
+    @FXML
+    private lateinit var encodingDoubleEncodeCheckBox: CheckBox
 
     /*--TEXT FIELDS---*/
     @FXML
@@ -92,9 +100,13 @@ class MainController : Initializable {
     @FXML
     private lateinit var localResolutionYTextField: TextField
     @FXML
-    private lateinit var localByteSizeTextField: TextField
+    private lateinit var localVideoBitrateTextField: TextField
     @FXML
     private lateinit var settingsFFmpegPathTextFieldLocal: TextField
+    @FXML
+    private lateinit var saveDialogFileNameLocal: TextField
+    @FXML
+    private lateinit var saveDialogPresetNameLocal: TextField
 
     /*--LOCAL CHOISE BOXES---*/
     @FXML
@@ -119,6 +131,10 @@ class MainController : Initializable {
     private lateinit var localStartButton: Button
     @FXML
     private lateinit var localOnFindManualyFFmpegButton: Button
+    @FXML
+    private lateinit var saveDialogSavePresetLocal: Button
+    @FXML
+    private lateinit var localSavePresetButton: Button
 
     /*--LOCAL CHECK BOXES---*/
     @FXML
@@ -129,6 +145,8 @@ class MainController : Initializable {
     private lateinit var localSubtitlesCheckBox: CheckBox
     @FXML
     private lateinit var localExperimentalCheckBox: CheckBox
+    @FXML
+    private lateinit var localDoubleEncodeCheckBox: CheckBox
 
     @FXML
     private fun onFileDragNDropped(){
@@ -163,6 +181,40 @@ class MainController : Initializable {
     @FXML
     private fun onPathChanged(){
         manager.saveFFMpeg(settingsFFmpegPathTextFieldLocal.text)
+    }
+
+    fun onSavePreset(presetName: String, fileName:String, dialog: PresetDialog) {
+        Logger.message("Save Preset", "Preset save started")
+        dialog.close()
+        val name: String = presetName
+        val resolutionX : Int = localResolutionXTextField.text.toInt()
+        val resolutionY : Int = localResolutionYTextField.text.toInt()
+        val fileType: VideoFileTypes = localEncodingChooseBoxFileFormat.value
+        val stereo: Boolean = localCheckBoxStereo.isSelected
+        val audioCodec: AudioCodecTypes = localAudioCodecChooser.value
+        val sampleRate: SampleRates = localSampleRateChooser.value
+        val bitRate: BitRates = localBitRateChooser.value
+        val videoCodec: VideoCodecs = localVideoCodecChooser.value
+        val fps: Int = localFpsTextField.text.toInt()
+        val videoBitRate: Long = localVideoBitrateTextField.text.toLong()
+        val overwrite: Boolean = localOverrideFileCheckBox.isSelected
+        val subtitles: Boolean = localSubtitlesCheckBox.isSelected
+        val experimental: Boolean = localExperimentalCheckBox.isSelected
+        val doubleEncoding: Boolean = localDoubleEncodeCheckBox.isSelected
+        val preset = Preset(
+            name, resolutionX, resolutionY, fileType, stereo, audioCodec, sampleRate, bitRate, videoCodec, fps, videoBitRate, overwrite, subtitles, experimental, doubleEncoding
+        )
+        manager.savePreset(preset, fileName)
+        PresetRegistry.register(preset)
+    }
+
+    @FXML
+    fun onSavePresetButton(){
+        val window = localSavePresetButton.scene.window
+        window.userData = this
+        val dialog = PresetDialog(window)
+
+        dialog.showAndWait()
     }
 
     @FXML
@@ -208,7 +260,10 @@ class MainController : Initializable {
         val executor = FFmpegExecutor(ffmpeg, ffprobe)
 
         val thread = Thread{
-            executor.createTwoPassJob(finalBuilder).run()
+            if (localDoubleEncodeCheckBox.isSelected)
+                executor.createTwoPassJob(finalBuilder).run()
+            else
+                executor.createJob(finalBuilder).run()
         }
         thread.start()
 
@@ -228,17 +283,24 @@ class MainController : Initializable {
         localFilePathTextField = encodingFilePathTextField
         localPathToFolderTextField = encodingPathToFolderTextField
         localFileNameTextField = encodingFileNameTextField
-        localByteSizeTextField = encodingVideoBitRateTextField
+        localVideoBitrateTextField = encodingVideoBitRateTextField
         localFpsTextField = encodingFpsTextField
         localResolutionXTextField = encodingResolutionXTextField
         localResolutionYTextField = encodingResolutionYTextField
         settingsFFmpegPathTextFieldLocal = settingsFFmpegPathTextField
     }
 
+    fun initializeDialog(){
+        saveDialogFileNameLocal = saveDialogFileName
+        saveDialogPresetNameLocal = saveDialogPresetName
+        saveDialogSavePresetLocal = saveDialogSavePreset
+    }
+
     fun initializeLocalButtons(){
         localButtonChooseFolder = encodingButtonChooseFolder
         localButtonChooseFile = encodingButtonChooseFile
         localStartButton = encodingStartButton
+        localSavePresetButton =encodingSavePresetButton
     }
 
     fun initializeLocalCheckBoxes(){
@@ -246,6 +308,7 @@ class MainController : Initializable {
         localOverrideFileCheckBox = encodingOverrideFileCheckBox
         localSubtitlesCheckBox = encodingSubtitlesCheckBox
         localExperimentalCheckBox = encodingExperimentalCheckBox
+        localDoubleEncodeCheckBox = encodingDoubleEncodeCheckBox
     }
 
     fun registerEvents(){
@@ -263,8 +326,6 @@ class MainController : Initializable {
     }
 
     fun registerChoiseBoxItems(){
-        println(PresetRegistry.getRegisteredPresetsNames())
-        localChooseBoxEncodingMethod.items.addAll(PresetRegistry.getRegisteredPresetsNames())
         localEncodingChooseBoxFileFormat.items.addAll(VideoFileTypes.values())
         localAudioCodecChooser.items.addAll(AudioCodecTypes.values())
         localSampleRateChooser.items.addAll(SampleRates.values())
@@ -272,9 +333,16 @@ class MainController : Initializable {
         localVideoCodecChooser.items.addAll(VideoCodecs.values())
     }
 
+    fun registerPresets(){
+        localChooseBoxEncodingMethod.items.clear()
+        localChooseBoxEncodingMethod.items.addAll(PresetRegistry.getRegisteredPresetsNames())
+    }
+
     fun initializeData(){
         manager = SettingsManager()
+        manager.loadPresetsFromFolder()
         settingsFFmpegPathTextFieldLocal.text = manager.readSettings().ffmpegPath
+        registerPresets()
     }
 
     fun applyPreset(preset: Preset){
@@ -286,14 +354,16 @@ class MainController : Initializable {
         localSampleRateChooser.value = preset.sampleRate
         localBitRateChooser.value = preset.bitRate
         localFpsTextField.text = preset.fps.toString()
-        localByteSizeTextField.text = preset.videoBitRate.toString()
+        localVideoBitrateTextField.text = preset.videoBitRate.toString()
         localOverrideFileCheckBox.isSelected = preset.overwrite
         localSubtitlesCheckBox.isSelected = preset.subtitles
         localExperimentalCheckBox.isSelected = preset.experimental
         localVideoCodecChooser.value = preset.videoCodec
+        localDoubleEncodeCheckBox.isSelected = preset.doubleEncoding
     }
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
+
         initializeLocalChoiseBoxes()
         initializeLocalTextFields()
         initializeLocalButtons()

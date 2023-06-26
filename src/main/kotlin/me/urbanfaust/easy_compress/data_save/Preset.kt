@@ -16,5 +16,6 @@ data class Preset(
     val videoBitRate: Long,
     val overwrite: Boolean,
     val subtitles: Boolean,
-    val experimental: Boolean
+    val experimental: Boolean,
+    val doubleEncoding: Boolean
 )
