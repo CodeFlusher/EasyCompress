@@ -3,6 +3,8 @@
 
 # Log file
 *.log
+settings.json
+.build
 
 # BlueJ files
 *.ctxt
