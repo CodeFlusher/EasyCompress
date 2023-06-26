@@ -35,7 +35,7 @@
                                                 <Font size="18.0" />
                                             </font>
                                         </Label>
-                              <Button layoutX="265.0" layoutY="2.0" mnemonicParsing="false" onAction="#onSavePresetButton" prefHeight="25.0" prefWidth="65.0" text="Save" fx:id="encodingSavePresetButton"/>
+                              <Button fx:id="encodingSavePresetButton" layoutX="265.0" layoutY="2.0" mnemonicParsing="false" onAction="#onSavePresetButton" prefHeight="25.0" prefWidth="65.0" text="Save" />
                                     </children>
                                 </Pane>
                             </items>
@@ -156,6 +156,7 @@
                         <Button fx:id="onFindManualyFFmpegButton" mnemonicParsing="false" onAction="#onFildManuallyFFmpeg" prefHeight="27.0" prefWidth="126.0" text="Locate Manually" />
                      </children>
                   </HBox>
+                  <Button layoutX="14.0" layoutY="57.0" mnemonicParsing="false" onAction="#onDownloadForWindows" prefHeight="25.0" prefWidth="578.0" text="Download for Windows" />
                </children></AnchorPane>
             </content>
         </Tab>

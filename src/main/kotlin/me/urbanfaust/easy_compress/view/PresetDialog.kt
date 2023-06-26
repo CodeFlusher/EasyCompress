@@ -57,6 +57,7 @@ class PresetDialog(owner: Window) : Dialog<PresetLink>() {
             Logger.message("Preset Dialog", "Preset successfully saved")
             (owner.userData as MainController).onSavePreset(saveDialogPresetNameLocal.text, saveDialogFileNameLocal.text, this)
         }
+
     }
 
     init {

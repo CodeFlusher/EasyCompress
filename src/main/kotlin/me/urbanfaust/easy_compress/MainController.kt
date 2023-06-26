@@ -1,7 +1,6 @@
 package me.urbanfaust.easy_compress
 
 import javafx.fxml.FXML
-import javafx.fxml.FXMLLoader
 import javafx.fxml.Initializable
 import javafx.scene.control.*
 import javafx.stage.DirectoryChooser
@@ -16,9 +15,15 @@ import net.bramp.ffmpeg.FFmpeg
 import net.bramp.ffmpeg.FFmpegExecutor
 import net.bramp.ffmpeg.FFprobe
 import net.bramp.ffmpeg.builder.FFmpegBuilder
-import java.lang.reflect.Executable
+import java.awt.Desktop
+import java.io.BufferedInputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.net.URI
 import java.net.URL
 import java.util.*
+
 
 class MainController : Initializable {
 
@@ -166,6 +171,11 @@ class MainController : Initializable {
             println(files.absolutePath)
         }
 
+    }
+
+    @FXML
+    private fun onDownloadForWindows(){
+        Desktop.getDesktop().browse(URI("https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-2023-06-21-git-1bcb8a7338-full_build.7z"));
     }
     @FXML
     private fun onChooseFolderAction(){

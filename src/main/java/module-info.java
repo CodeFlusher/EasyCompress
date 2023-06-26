@@ -7,6 +7,7 @@ module me.urbanfaust.easy_compress {
     requires ffmpeg;
 
     requires com.google.gson;
+    requires java.desktop;
 
     opens me.urbanfaust.easy_compress.data_save to com.google.gson;
     opens me.urbanfaust.easy_compress.data to com.google.gson;

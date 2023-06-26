@@ -47,12 +47,15 @@ dependencies {
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
     implementation ("com.google.code.gson:gson:2.9.0")
 
+
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
     implementation("net.bramp.ffmpeg:ffmpeg:0.7.0")
-    implementation("ws.schild:jave-all-deps:3.3.1")
+
+    implementation( "net.sf.sevenzipjbinding:sevenzipjbinding:16.02-2.01")
+    implementation( "net.sf.sevenzipjbinding:sevenzipjbinding-all-platforms:16.02-2.01")
 }
 
 test {
