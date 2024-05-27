@@ -1,13 +1,15 @@
 plugins {
+
     id 'java'
     id 'application'
     id 'org.javamodularity.moduleplugin' version '1.8.12'
     id 'org.openjfx.javafxplugin' version '0.0.13'
     id 'org.beryx.jlink' version '2.25.0'
-    id 'org.jetbrains.kotlin.jvm' version '1.9.0-RC'
+    id 'org.jetbrains.kotlin.jvm' version '2.0.0'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
-group 'me.urbanfaust'
+group 'me.codeflusher'
 version '1.0-SNAPSHOT'
 
 repositories {
@@ -26,14 +28,15 @@ tasks.withType(JavaCompile) {
 }
 
 application {
-    mainModule = 'me.urbanfaust.easy_compress'
-    mainClass = 'me.urbanfaust.easy_compress.MainApp'
+    mainModule = 'me.codeflusher.easy_compress'
+    mainClassName = 'me.codeflusher.easy_compress.MainKt'
 }
 
 [compileKotlin, compileTestKotlin].forEach {
     it.kotlinOptions {
         jvmTarget = '17'
     }
+
 }
 
 javafx {
@@ -52,7 +55,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
-    implementation("net.bramp.ffmpeg:ffmpeg:0.7.0")
+    implementation("net.bramp.ffmpeg:ffmpeg:0.8.0")
 
     implementation( "net.sf.sevenzipjbinding:sevenzipjbinding:16.02-2.01")
     implementation( "net.sf.sevenzipjbinding:sevenzipjbinding-all-platforms:16.02-2.01")
@@ -73,6 +76,11 @@ jlink {
 jlinkZip {
     group = 'distribution'
 }
+
+kotlin {
+    jvmToolchain(17)
+}
+
 compileKotlin {
     kotlinOptions {
         jvmTarget = "17"

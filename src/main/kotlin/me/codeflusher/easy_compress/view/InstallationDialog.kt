@@ -1,0 +1,220 @@
+package me.codeflusher.easy_compress.view
+
+import com.google.gson.Gson
+import javafx.event.ActionEvent
+import javafx.fxml.FXML
+import javafx.fxml.Initializable
+import javafx.scene.control.Alert
+import javafx.scene.control.ButtonType
+import javafx.scene.control.CheckBox
+import javafx.scene.control.TextField
+import javafx.scene.input.DragEvent
+import javafx.stage.DirectoryChooser
+import me.codeflusher.easy_compress.MainApp
+import me.codeflusher.easy_compress.data_save.Settings
+import me.codeflusher.easy_compress.util.Logger
+import me.codeflusher.easy_compress.util.ShortcutFactory
+import me.codeflusher.easy_compress.util.Utils
+import java.io.File
+import java.net.URL
+import java.util.*
+import kotlin.reflect.typeOf
+import kotlin.system.exitProcess
+
+class InstallationDialog : Initializable {
+
+
+    @FXML
+    private lateinit var localInstallationPath: TextField
+
+    @FXML
+    private lateinit var setupInstallationPath: TextField
+
+    @FXML
+    private lateinit var localFFmpegPath: TextField
+
+    @FXML
+    private lateinit var setupFFmpegPath: TextField
+
+    @FXML
+    private lateinit var setupCreateShortcut: CheckBox
+
+    @FXML
+    private lateinit var setupCreateFolder: CheckBox
+
+    @FXML
+    private lateinit var setupUseHWAcceleration: CheckBox
+
+    @FXML
+    private lateinit var localCreateShortcut: CheckBox
+
+    @FXML
+    private lateinit var localCreateFolder: CheckBox
+    @FXML
+    private lateinit var localUseHWAcceleration: CheckBox
+
+    override fun initialize(p0: URL?, p1: ResourceBundle?) {
+
+        initializeLocal()
+
+    }
+
+    /*
+    * Local Initialization
+    * */
+
+    private fun initializeLocal(){
+        localInstallationPath = setupInstallationPath
+        localInstallationPath.text = System.getenv("ProgramFiles").plus(File.separator+"CodeFlusher"+File.separator+"EasyCompress");
+        localCreateFolder = setupCreateFolder
+        localCreateShortcut = setupCreateShortcut
+        localUseHWAcceleration = setupUseHWAcceleration
+        localFFmpegPath = setupFFmpegPath
+    }
+
+    /*
+    * EVENTS
+    * */
+
+    fun onInstall(actionEvent: ActionEvent){
+
+        val file = File(localInstallationPath.text)
+
+        file.mkdirs()
+
+        if (!file.isDirectory or !file.isAbsolute){
+            Logger.warnLog("Installation Path", "Invalid Path")
+            Logger.warnLog("Installation Path", localInstallationPath.text)
+            Utils.showUserDialog("Invalid Path", Alert.AlertType.ERROR)
+            return
+        }
+        if(file.listFiles()?.isNotEmpty() == true and ((file.listFiles()?.any{it.name == "EasyCompress.jar"}) == false)){
+            Logger.warnLog("Installation Path", "Folder Contains Files")
+            Utils.showUserDialog("Folder must be empty", Alert.AlertType.ERROR)
+            return
+        }
+
+        if (file.absolutePath.contains(" ")){
+            Utils.showUserDialog("Path should not contain spaces", Alert.AlertType.ERROR)
+            return
+        }
+
+        val currentFile = File(MainApp.currentJavaFile)
+
+        val newFile = File(localInstallationPath.text.plus(File.separator+"EasyCompress.jar"))
+        newFile.createNewFile()
+        val startFile = File(localInstallationPath.text.plus(File.separator+"start.bat"))
+        val iconFile = File(localInstallationPath.text.plus(File.separator+"me/codeflusher/easy_compress/icon.ico"))
+        val generatedIconFile = File(Utils.createPath(MainApp.currentFolder, "me", "codeflusher","easy_compress","icon.ico"))
+        val generatedFolder = File(Utils.createPath(MainApp.currentFolder, "me"))
+
+        val settingsFile = File(Utils.createPath(localInstallationPath.text, "settings.json"))
+
+        currentFile.copyTo(newFile, overwrite = true)
+
+        val installationFile = File(localInstallationPath.text.plus(File.separator+"installationFolder.info"))
+
+        installationFile.createNewFile()
+        startFile.createNewFile()
+        startFile.writeText("java -Dfile.encoding=UTF-8 -jar EasyCompress.jar")
+
+        Logger.message("Installing", "Running icon unpacker:", "java -jar " + newFile.absolutePath + " iconInstallation")
+        val process = Runtime.getRuntime().exec("java -jar " + newFile.absolutePath + " iconInstallation")
+
+        while (!process.isAlive){
+            try{
+                Thread.sleep(100)
+            } catch (_: Exception){
+
+            }
+
+        }
+
+        if (iconFile.exists())
+            iconFile.delete()
+
+        generatedIconFile.copyTo(iconFile)
+        generatedFolder.deleteRecursively()
+
+        settingsFile.createNewFile()
+        val gson = Gson()
+        settingsFile.writeText(gson.toJson(
+            (Settings(localFFmpegPath.text, debug = false, hardwareAcceleration = localUseHWAcceleration.isSelected))
+        ))
+
+        if (localCreateShortcut.isSelected){
+            Logger.log("Installation", "Creating Desktop")
+            try{
+                ShortcutFactory.createDesktopShortcut(startFile.absolutePath, "EasyCompress.lnk", iconFile.absolutePath)
+            }catch (e:Exception){
+                Logger.exception("Shortcut", e)
+            }
+
+        }
+
+        if (localCreateFolder.isSelected){
+            Logger.log("Installation", "Creating start up folder link")
+
+            val startUpPath = Utils.createPath("AppData","Roaming","Microsoft","Windows","Start Menu","Programs");
+            val startUpFile = File(System.getProperty("user.home") + startUpPath +File.separator+"EasyCompress.lnk");
+
+            if(startUpFile.exists()){
+                startUpFile.delete();
+            }
+
+            startUpFile.createNewFile()
+            try{
+                ShortcutFactory.createShortcut(startFile.absolutePath, startUpFile.absolutePath, iconFile.absolutePath)
+            }catch (e:Exception){
+                Logger.exception("Shortcut", e)
+            }
+        }
+
+
+        //Finishing
+        if (Utils.askChooseDialog("Installation Finished","Successfully installed. Open now?", ButtonType.YES, ButtonType.CLOSE) == ButtonType.YES){
+            val process = Runtime.getRuntime().exec("java -jar " + newFile.absolutePath)
+        }
+
+
+        exitProcess(0)
+    }
+
+    fun onSkip(actionEvent: ActionEvent){
+        Logger.log("Skipping Installation", MainApp.currentJavaFile)
+        Logger.log("Skipping Installation", "java -jar " + MainApp.currentJavaFile.drop(1) + " noInstallation")
+        val process = Runtime.getRuntime().exec("java -jar " + MainApp.currentJavaFile.drop(1) + " noInstallation")
+
+        exitProcess(0);
+    }
+
+    fun onChooseFolderAction(actionEvent: ActionEvent) {
+        val file = Utils.openDialogForDirectory(localInstallationPath.scene.window) ?: return
+        localInstallationPath.text = file.absolutePath
+    }
+
+    fun onFolderDragNDropped(dragEvent: DragEvent) {
+        val dragBoard = dragEvent.dragboard
+        if(!dragBoard.hasFiles())
+            return
+        val files = dragBoard.files
+        val firstDir = files.find { it.isDirectory }
+        if (firstDir == null){
+            return
+        }
+        localInstallationPath.text = firstDir.absolutePath;
+    }
+
+    fun onFildManuallyFFmpeg(actionEvent: ActionEvent) {
+        Logger.debugLog("File Chooser", "Choose FFMpeg directory action")
+        val fileChooser = DirectoryChooser()
+        val file = fileChooser.showDialog(setupFFmpegPath.scene.window)
+        if (file != null) {
+            setupFFmpegPath.text = file.absolutePath
+            Logger.log("File Chooser", "Chosen Path:", file.absolutePath)
+        }
+    }
+
+}
+
+

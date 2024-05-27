@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" tabDragPolicy="FIXED" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.codeflusher.easy_compress.MainController">
+    <tabs>
+        <Tab text="Video Encoding">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                    <children>
+                        <SplitPane dividerPositions="0.5" layoutX="11.0" layoutY="6.0" prefHeight="35.0" prefWidth="589.0">
+                            <items>
+                                <Label prefHeight="27.0" prefWidth="248.0" text="Video Encoding">
+                                    <font>
+                                        <Font name="System Bold" size="18.0" />
+                                    </font>
+                                </Label>
+                                <Pane prefHeight="200.0" prefWidth="200.0">
+                                    <children>
+                                        <ChoiceBox fx:id="encodingChooseBoxMethod" layoutX="110.0" layoutY="2.0" prefHeight="25.0" prefWidth="154.0" />
+                                        <Label contentDisplay="RIGHT" layoutY="3.0" text="Preset">
+                                            <font>
+                                                <Font size="18.0" />
+                                            </font>
+                                        </Label>
+                              <Button fx:id="encodingSavePresetButton" layoutX="265.0" layoutY="2.0" mnemonicParsing="false" onAction="#onSavePresetButton" prefHeight="25.0" prefWidth="65.0" text="Save" />
+                                    </children>
+                                </Pane>
+                            </items>
+                        </SplitPane>
+                        <Separator layoutX="-38.0" layoutY="47.0" prefHeight="4.0" prefWidth="646.0" />
+                        <HBox layoutX="11.0" layoutY="57.0" prefHeight="19.0" prefWidth="579.0">
+                            <children>
+                                <TextField fx:id="encodingFilePathTextField" onDragDropped="#onFileDragNDropped" promptText="Path to file" />
+                                <Button fx:id="encodingButtonChooseFile" mnemonicParsing="false" onAction="#onChooseFileAction" text="Choose" />
+                                <TextField fx:id="encodingPathToFolderTextField" onDragDropped="#onFolderFileDragNDropped" promptText="Path to output folder" />
+                                <Button fx:id="encodingButtonChooseFolder" mnemonicParsing="false" onAction="#onChooseFolderAction" text="Choose" />
+                                <TextField fx:id="encodingFileNameTextField" prefHeight="25.0" prefWidth="122.0" promptText="Output file name" />
+                                <ChoiceBox fx:id="encodingChooseBoxFileFormat" prefHeight="25.0" prefWidth="48.0" />
+                            </children>
+                        </HBox>
+                        <Separator layoutX="-23.0" layoutY="88.0" prefHeight="4.0" prefWidth="646.0" />
+                        <Label layoutX="14.0" layoutY="92.0" prefHeight="27.0" prefWidth="248.0" text="Audio">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Label>
+                        <HBox layoutX="12.0" layoutY="119.0" prefHeight="17.0" prefWidth="588.0">
+                            <children>
+                                <CheckBox fx:id="encodingCheckBoxStereo" mnemonicParsing="false" prefHeight="26.0" prefWidth="65.0" text="Stereo">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </CheckBox>
+                                <Separator orientation="VERTICAL" prefHeight="20.0" prefWidth="21.0" />
+                                <Label prefHeight="25.0" prefWidth="83.0" text="Audio Codec">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                                <ChoiceBox fx:id="encodingAudioCodecChooser" prefHeight="25.0" prefWidth="58.0" />
+                                <Separator orientation="VERTICAL" prefHeight="20.0" prefWidth="21.0" />
+                                <Label prefHeight="25.0" prefWidth="83.0" text="Sample Rate">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                                <ChoiceBox fx:id="encodingSampleRateChooser" prefHeight="25.0" prefWidth="75.0" />
+                                <Separator orientation="VERTICAL" prefHeight="20.0" prefWidth="21.0" />
+                                <Label prefHeight="25.0" prefWidth="52.0" text="Bit Rate">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                                <ChoiceBox fx:id="encodingBitRateChooser" prefHeight="25.0" prefWidth="105.0" />
+                            </children>
+                        </HBox>
+                        <Separator layoutX="-23.0" layoutY="158.0" prefHeight="4.0" prefWidth="646.0" />
+                        <Label layoutX="14.0" layoutY="162.0" prefHeight="27.0" prefWidth="248.0" text="Video">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Label>
+                        <HBox layoutX="12.0" layoutY="189.0" prefHeight="17.0" prefWidth="588.0">
+                            <children>
+                                <Label prefHeight="25.0" prefWidth="83.0" text="Video Codec">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                                <ChoiceBox fx:id="encodingVideoCodecChooser" prefHeight="25.0" prefWidth="58.0" />
+                                <Separator orientation="VERTICAL" prefHeight="20.0" prefWidth="21.0" />
+                                <Label prefHeight="25.0" prefWidth="71.0" text="Framerate">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                                <TextField fx:id="encodingFpsTextField" prefHeight="25.0" prefWidth="115.0" promptText="Frames per second" />
+                                <Separator orientation="VERTICAL" prefHeight="20.0" prefWidth="21.0" />
+                                <Label prefHeight="25.0" prefWidth="71.0" text="Resolution">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                                <TextField fx:id="encodingResolutionXTextField" prefHeight="25.0" prefWidth="68.0" />
+                                <TextField fx:id="encodingResolutionYTextField" prefHeight="25.0" prefWidth="77.0" />
+                            </children>
+                        </HBox>
+                        <HBox alignment="TOP_CENTER" layoutX="7.0" layoutY="278.0" prefHeight="35.0" prefWidth="586.0">
+                            <children>
+                                <CheckBox fx:id="encodingOverrideFileCheckBox" mnemonicParsing="false" prefHeight="35.0" prefWidth="150.0" text="Overwrite files" />
+                                <CheckBox fx:id="encodingSubtitlesCheckBox" mnemonicParsing="false" prefHeight="35.0" prefWidth="150.0" text="Subtitles" />
+                                <CheckBox fx:id="encodingExperimentalCheckBox" mnemonicParsing="false" prefHeight="35.0" prefWidth="150.0" text="Experimental" />
+                        <CheckBox fx:id="encodingDoubleEncodeCheckBox" mnemonicParsing="false" prefHeight="35.0" prefWidth="150.0" text="Double Pass" />
+                            </children>
+                        </HBox>
+                        <Button fx:id="encodingStartButton" layoutX="5.0" layoutY="313.0" mnemonicParsing="false" onAction="#onEncodingStart" prefHeight="51.0" prefWidth="591.0" text="Start">
+                            <font>
+                                <Font name="System Bold" size="24.0" />
+                            </font>
+                        </Button>
+                        <Label layoutX="145.0" layoutY="242.0" prefHeight="27.0" prefWidth="117.0" text="Target Bitrate">
+                            <font>
+                                <Font size="18.0" />
+                            </font>
+                        </Label>
+                        <TextField fx:id="encodingVideoBitRateTextField" layoutX="285.0" layoutY="243.0" promptText="Bytes" />
+                    </children>
+                </AnchorPane>
+            </content>
+        </Tab>
+        <Tab text="Settings">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="12.0">
+                     <children>
+                        <AnchorPane prefHeight="40.0" prefWidth="200.0">
+                           <children>
+                              <HBox prefHeight="12.0" prefWidth="576.0">
+                                 <children>
+                                    <Label prefHeight="27.0" prefWidth="158.0" text="Path to FFMpeg">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="settingsFFmpegPathTextField" onAction="#onPathChanged" prefHeight="27.0" prefWidth="350.0" promptText="Find folder called 'bin', containing ffmpeg.exe and ffprobe.exe" />
+                                    <Button fx:id="onFindManualyFFmpegButton" mnemonicParsing="false" onAction="#onFildManuallyFFmpeg" prefHeight="27.0" prefWidth="126.0" text="Locate Manually" />
+                                 </children>
+                              </HBox>
+                           </children>
+                           <opaqueInsets>
+                              <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+                           </opaqueInsets>
+                        </AnchorPane>
+                        <Button mnemonicParsing="false" onAction="#onDownloadForWindows" prefHeight="25.0" prefWidth="578.0" text="Download FFmpeg" />
+                        <TitledPane collapsible="false" prefWidth="200.0" text="Optional Settings">
+                           <VBox.margin>
+                              <Insets top="12.0" />
+                           </VBox.margin>
+                           <content>
+                              <GridPane prefHeight="248.0" prefWidth="567.0">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <AnchorPane prefHeight="30.0" prefWidth="100.0">
+                                       <children>
+                                          <HBox prefHeight="12.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="12.0">
+                                             <children>
+                                                <Label text="Use Hardware Acceleration">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                   <HBox.margin>
+                                                      <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                                <CheckBox fx:id="optionalHWAccelerationCheckbox" mnemonicParsing="false" onAction="#onHardwareAccelerationPropertyChanged" prefHeight="20.0" prefWidth="20.0">
+                                                   <HBox.margin>
+                                                      <Insets bottom="6.0" left="6.0" right="6.0" top="10.0" />
+                                                   </HBox.margin>
+                                                </CheckBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                              </GridPane>
+                           </content>
+                        </TitledPane>
+                     </children>
+                     <opaqueInsets>
+                        <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+                     </opaqueInsets>
+                  </VBox>
+               </children></AnchorPane>
+            </content>
+        </Tab>
+    </tabs>
+</TabPane>
