@@ -1,6 +1,5 @@
 package me.codeflusher.easy_compress.util;
 
-import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -61,7 +60,8 @@ public class ShortcutFactory {
 			newVBS(vbsCode);
 		} catch (IOException | InterruptedException e) {
 			System.err.println("Could not create and run VBS!");
-			e.printStackTrace();
+			Logger.exception("ShortCut Factory", e);
+//			e.printStackTrace();
 		} 
 	}
 
@@ -112,7 +112,7 @@ public class ShortcutFactory {
 			newVBS(vbsCode);
 		} catch (IOException | InterruptedException e) {
 			System.err.println("Could not create and run VBS!");
-			e.printStackTrace();
+			Logger.exception("ShortCut Factory", e);
 		}
 	}
 	

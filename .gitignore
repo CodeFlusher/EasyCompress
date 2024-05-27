@@ -3,8 +3,12 @@
 
 # Log file
 *.log
+
 settings.json
-.build
+/build/*
+/.idea/*
+/.gradle/*
+.gradle
 
 # BlueJ files
 *.ctxt

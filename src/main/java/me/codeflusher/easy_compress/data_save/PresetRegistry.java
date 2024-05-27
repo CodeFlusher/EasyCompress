@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public class PresetRegistry {
     static class PresetNotFoundException extends Exception{}
-    private static ArrayList<Preset> registeredPresets = new ArrayList<>();
+    private static final ArrayList<Preset> registeredPresets = new ArrayList<>();
     public static void register(Preset preset){
         Logger.message("Preset Registry", "Registering Preset");
         if(!registeredPresets.contains(preset))
@@ -31,9 +31,5 @@ public class PresetRegistry {
                 add(preset.getName());
             }
         }};
-    }
-
-    public static void registerFromFile(String filePath){
-        register(new SettingsManager().loadPreset(filePath));
     }
 }

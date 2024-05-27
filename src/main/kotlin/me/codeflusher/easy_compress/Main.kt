@@ -10,8 +10,6 @@ import me.codeflusher.easy_compress.data_save.StandardPresets
 import me.codeflusher.easy_compress.util.Logger
 import me.codeflusher.easy_compress.util.Utils
 import java.io.File
-import java.lang.reflect.Field
-import java.nio.charset.Charset
 import kotlin.properties.Delegates
 
 
@@ -43,7 +41,7 @@ class MainApp : Application() {
 
     override fun start(stage: Stage) {
         if (skipInstallation)
-            initializeApplication(stage);
+            initializeApplication(stage)
         else
             initializeSetup(stage)
         stage.show()

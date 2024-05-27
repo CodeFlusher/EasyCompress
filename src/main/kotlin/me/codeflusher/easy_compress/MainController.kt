@@ -6,7 +6,6 @@ import javafx.fxml.Initializable
 import javafx.scene.control.*
 import javafx.scene.control.Alert.AlertType
 import javafx.stage.DirectoryChooser
-import javafx.stage.FileChooser
 import me.codeflusher.easy_compress.data.*
 import me.codeflusher.easy_compress.data_save.Preset
 import me.codeflusher.easy_compress.data_save.PresetRegistry
@@ -499,7 +498,7 @@ class MainController : Initializable {
     private fun initializeData(){
         manager = SettingsManager()
         manager.loadPresetsFromFolder()
-        val settings = manager.readSettings();
+        val settings = manager.readSettings()
         settingsFFmpegPathTextFieldLocal.text = settings.ffmpegPath
         localHWAccelerationCheckBox.isSelected = settings.hardwareAcceleration
         registerPresets()

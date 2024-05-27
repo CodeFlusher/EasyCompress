@@ -1,13 +1,11 @@
 package me.codeflusher.easy_compress.data_save
 
 import com.google.gson.Gson
-import me.codeflusher.easy_compress.MainApp
 import me.codeflusher.easy_compress.util.Logger
 import me.codeflusher.easy_compress.util.Utils
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
-import java.nio.charset.Charset
 
 class SettingsManager {
 
@@ -39,8 +37,7 @@ class SettingsManager {
         return getDefaultSettings()
     }
 
-    fun writeSettings(settings: Settings){
-//        println("Writing Settings")
+    private fun writeSettings(settings: Settings){
         val gson = Gson()
         val json = gson.toJson(settings)
         try {
@@ -71,7 +68,7 @@ class SettingsManager {
         val json = gson.toJson(preset)
         try {
             Logger.message("File IO", "Trying to work with file: user_presets/$name.json")
-            val dir = File(Utils.getLocalFile("user_presets")).mkdirs()
+            File(Utils.getLocalFile("user_presets")).mkdirs()
             val file = File(Utils.getLocalFile("user_presets") + "\\$name.json")
             if (!file.exists()) {
                 file.createNewFile()
@@ -100,13 +97,12 @@ class SettingsManager {
     }
 
     fun loadPresetsFromFolder(){
-        val gson = Gson()
         try {
             File(Utils.getLocalFile("user_presets") + File.separator).walk().forEach {
                 PresetRegistry.register(loadPreset(it.name.dropLast(5)))
             }
         }catch (e:Exception){
-            e.printStackTrace()
+            Logger.exception("Preset Initialization", e)
         }
     }
 }

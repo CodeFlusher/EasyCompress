@@ -9,9 +9,6 @@ import me.codeflusher.easy_compress.MainApp;
 
 import java.io.File;
 
-import java.lang.reflect.Field;
-import java.nio.charset.Charset;
-
 import static javafx.scene.control.Alert.AlertType;
 
 /**

@@ -1,7 +1,6 @@
 package me.codeflusher.easy_compress.view
 
 import com.google.gson.Gson
-import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.Alert
@@ -18,7 +17,6 @@ import me.codeflusher.easy_compress.util.Utils
 import java.io.File
 import java.net.URL
 import java.util.*
-import kotlin.reflect.typeOf
 import kotlin.system.exitProcess
 
 class InstallationDialog : Initializable {
@@ -76,7 +74,7 @@ class InstallationDialog : Initializable {
     * EVENTS
     * */
 
-    fun onInstall(actionEvent: ActionEvent){
+    fun onInstall() {
 
         val file = File(localInstallationPath.text)
 
@@ -155,11 +153,11 @@ class InstallationDialog : Initializable {
         if (localCreateFolder.isSelected){
             Logger.log("Installation", "Creating start up folder link")
 
-            val startUpPath = Utils.createPath("AppData","Roaming","Microsoft","Windows","Start Menu","Programs");
-            val startUpFile = File(System.getProperty("user.home") + startUpPath +File.separator+"EasyCompress.lnk");
+            val startUpPath = Utils.createPath("AppData","Roaming","Microsoft","Windows","Start Menu","Programs")
+            val startUpFile = File(System.getProperty("user.home") + startUpPath +File.separator+"EasyCompress.lnk")
 
             if(startUpFile.exists()){
-                startUpFile.delete();
+                startUpFile.delete()
             }
 
             startUpFile.createNewFile()
@@ -173,22 +171,22 @@ class InstallationDialog : Initializable {
 
         //Finishing
         if (Utils.askChooseDialog("Installation Finished","Successfully installed. Open now?", ButtonType.YES, ButtonType.CLOSE) == ButtonType.YES){
-            val process = Runtime.getRuntime().exec("java -jar " + newFile.absolutePath)
+            Runtime.getRuntime().exec("java -jar " + newFile.absolutePath)
         }
 
 
         exitProcess(0)
     }
 
-    fun onSkip(actionEvent: ActionEvent){
+    fun onSkip(){
         Logger.log("Skipping Installation", MainApp.currentJavaFile)
         Logger.log("Skipping Installation", "java -jar " + MainApp.currentJavaFile.drop(1) + " noInstallation")
-        val process = Runtime.getRuntime().exec("java -jar " + MainApp.currentJavaFile.drop(1) + " noInstallation")
+        Runtime.getRuntime().exec("java -jar " + MainApp.currentJavaFile.drop(1) + " noInstallation")
 
-        exitProcess(0);
+        exitProcess(0)
     }
 
-    fun onChooseFolderAction(actionEvent: ActionEvent) {
+    fun onChooseFolderAction() {
         val file = Utils.openDialogForDirectory(localInstallationPath.scene.window) ?: return
         localInstallationPath.text = file.absolutePath
     }
@@ -202,10 +200,10 @@ class InstallationDialog : Initializable {
         if (firstDir == null){
             return
         }
-        localInstallationPath.text = firstDir.absolutePath;
+        localInstallationPath.text = firstDir.absolutePath
     }
 
-    fun onFildManuallyFFmpeg(actionEvent: ActionEvent) {
+    fun onFildManuallyFFmpeg() {
         Logger.debugLog("File Chooser", "Choose FFMpeg directory action")
         val fileChooser = DirectoryChooser()
         val file = fileChooser.showDialog(setupFFmpegPath.scene.window)
