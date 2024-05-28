@@ -16,7 +16,11 @@ import me.codeflusher.easy_compress.util.ShortcutFactory
 import me.codeflusher.easy_compress.util.Utils
 import java.io.File
 import java.net.URL
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 import java.util.*
+import kotlin.io.path.*
 import kotlin.system.exitProcess
 
 class InstallationDialog : Initializable {
@@ -74,52 +78,71 @@ class InstallationDialog : Initializable {
     * EVENTS
     * */
 
+    @OptIn(ExperimentalPathApi::class)
     fun onInstall() {
 
-        val file = File(localInstallationPath.text)
+//        val file = File(localInstallationPath.text)
 
-        file.mkdirs()
+        val file = Path.of(localInstallationPath.text)
 
-        if (!file.isDirectory or !file.isAbsolute){
+        file.createParentDirectories()
+
+        if (file.isRegularFile() or !file.isAbsolute){
             Logger.warnLog("Installation Path", "Invalid Path")
             Logger.warnLog("Installation Path", localInstallationPath.text)
             Utils.showUserDialog("Invalid Path", Alert.AlertType.ERROR)
             return
         }
-        if(file.listFiles()?.isNotEmpty() == true and ((file.listFiles()?.any{it.name == "EasyCompress.jar"}) == false)){
+
+        if(!file.all { it.name != "EasyCompress.jar" }){
             Logger.warnLog("Installation Path", "Folder Contains Files")
             Utils.showUserDialog("Folder must be empty", Alert.AlertType.ERROR)
             return
         }
 
-        if (file.absolutePath.contains(" ")){
-            Utils.showUserDialog("Path should not contain spaces", Alert.AlertType.ERROR)
-            return
-        }
+//        if (file.contains(" ")){
+//            Utils.showUserDialog("Path should not contain spaces", Alert.AlertType.ERROR)
+//            return
+//        }
 
-        val currentFile = File(MainApp.currentJavaFile)
+        val currentFile = Path.of(MainApp.currentJavaFile)
 
-        val newFile = File(localInstallationPath.text.plus(File.separator+"EasyCompress.jar"))
-        newFile.createNewFile()
-        val startFile = File(localInstallationPath.text.plus(File.separator+"start.bat"))
-        val iconFile = File(localInstallationPath.text.plus(File.separator+"me/codeflusher/easy_compress/icon.ico"))
-        val generatedIconFile = File(Utils.createPath(MainApp.currentFolder, "me", "codeflusher","easy_compress","icon.ico"))
-        val generatedFolder = File(Utils.createPath(MainApp.currentFolder, "me"))
+//        val newFile = File(localInstallationPath.text.plus(File.separator+"EasyCompress.jar"))
+        val newFile = Path.of(localInstallationPath.text,"EasyCompress.jar")
+        newFile.deleteIfExists()
+        newFile.createFile()
 
-        val settingsFile = File(Utils.createPath(localInstallationPath.text, "settings.json"))
+//        val startFile = File(localInstallationPath.text.plus(File.separator+"start.bat"))
+        val startFile = Path.of(localInstallationPath.text, "start.bat")
+//        val iconFile = File(localInstallationPath.text.plus(File.separator+"me/codeflusher/easy_compress/icon.ico"))
+        val iconFile = Path.of(localInstallationPath.text, "icon.ico")
+//        val generatedIconFile = File(Utils.createPath(MainApp.currentFolder, "me", "codeflusher","easy_compress","icon.ico"))
+        val generatedIconFile = Path.of(MainApp.currentFolder, "me","codeflusher","easy_compress","icon.ico")
+//        val generatedFolder = File(Utils.createPath(MainApp.currentFolder, "me"))
+        val generatedFolder = Path.of(MainApp.currentFolder,"me")
+
+//        val settingsFile = File(Paths.get(localInstallationPath.text, "settings.json"))
+        val settingsFile = Path.of(localInstallationPath.text, "settings.json")
+        settingsFile.deleteIfExists()
+        settingsFile.createFile()
 
         currentFile.copyTo(newFile, overwrite = true)
 
-        val installationFile = File(localInstallationPath.text.plus(File.separator+"installationFolder.info"))
+//        val installationFile = File(localInstallationPath.text.plus(File.separator+"installationFolder.info"))
+        val installationFile = Path.of(localInstallationPath.text, "installationFolder.info")
 
-        installationFile.createNewFile()
-        startFile.createNewFile()
+        installationFile.deleteIfExists()
+        installationFile.createFile()
+
+        startFile.deleteIfExists()
+        startFile.createFile()
+
         startFile.writeText("java -Dfile.encoding=UTF-8 -jar EasyCompress.jar")
 
-        Logger.message("Installing", "Running icon unpacker:", "java -jar " + newFile.absolutePath + " iconInstallation")
-        val process = Runtime.getRuntime().exec("java -jar " + newFile.absolutePath + " iconInstallation")
+        Logger.message("Installing", "Running icon unpacker:", "java -jar " + newFile.absolutePathString() + " iconInstallation")
+        val process = Runtime.getRuntime().exec("java -jar " +"\""+ newFile.absolute()+"\"" + " iconInstallation")
 
-        while (!process.isAlive){
+        while (process.isAlive){
             try{
                 Thread.sleep(100)
             } catch (_: Exception){
@@ -128,13 +151,11 @@ class InstallationDialog : Initializable {
 
         }
 
-        if (iconFile.exists())
-            iconFile.delete()
+        iconFile.deleteIfExists()
 
         generatedIconFile.copyTo(iconFile)
         generatedFolder.deleteRecursively()
 
-        settingsFile.createNewFile()
         val gson = Gson()
         settingsFile.writeText(gson.toJson(
             (Settings(localFFmpegPath.text, debug = false, hardwareAcceleration = localUseHWAcceleration.isSelected))
@@ -143,7 +164,7 @@ class InstallationDialog : Initializable {
         if (localCreateShortcut.isSelected){
             Logger.log("Installation", "Creating Desktop")
             try{
-                ShortcutFactory.createDesktopShortcut(startFile.absolutePath, "EasyCompress.lnk", iconFile.absolutePath)
+                ShortcutFactory.createDesktopShortcut(startFile.absolutePathString(), "EasyCompress.lnk", iconFile.absolutePathString())
             }catch (e:Exception){
                 Logger.exception("Shortcut", e)
             }
@@ -162,7 +183,7 @@ class InstallationDialog : Initializable {
 
             startUpFile.createNewFile()
             try{
-                ShortcutFactory.createShortcut(startFile.absolutePath, startUpFile.absolutePath, iconFile.absolutePath)
+                ShortcutFactory.createShortcut(startFile.absolutePathString(), startUpFile.absolutePath, iconFile.absolutePathString())
             }catch (e:Exception){
                 Logger.exception("Shortcut", e)
             }
@@ -171,7 +192,7 @@ class InstallationDialog : Initializable {
 
         //Finishing
         if (Utils.askChooseDialog("Installation Finished","Successfully installed. Open now?", ButtonType.YES, ButtonType.CLOSE) == ButtonType.YES){
-            Runtime.getRuntime().exec("java -jar " + newFile.absolutePath)
+            Runtime.getRuntime().exec("java -jar \"" + newFile.absolutePathString()+"\"")
         }
 
 

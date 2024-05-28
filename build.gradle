@@ -23,8 +23,25 @@ ext {
 sourceCompatibility = '17'
 targetCompatibility = '17'
 
+tasks.withType(Jar).configureEach {
+    manifest {
+        attributes["Manifest-Version"] = "1.0"
+        attributes["Main-Class"] = "me.codeflusher.easy_compress.MainKt"
+    }
+}
+
 tasks.withType(JavaCompile).configureEach {
+
+    manifest {
+        attributes["Manifest-Version"] = "1.0"
+        attributes["Main-Class"] = "me.codeflusher.easy_compress.MainKt"
+    }
     options.encoding = 'UTF-8'
+}
+
+manifest(){
+    attributes["Manifest-Version"] = "1.0"
+    attributes["Main-Class"] = "me.codeflusher.easy_compress.MainKt"
 }
 
 application {

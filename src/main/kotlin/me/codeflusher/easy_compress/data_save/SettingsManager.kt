@@ -4,51 +4,42 @@ import com.google.gson.Gson
 import me.codeflusher.easy_compress.util.Logger
 import me.codeflusher.easy_compress.util.Utils
 import java.io.File
-import java.io.FileReader
-import java.io.FileWriter
+import java.nio.file.Path
+import kotlin.io.path.*
 
 class SettingsManager {
 
-    fun getDefaultSettings() : Settings{
+    private fun getDefaultSettings() : Settings{
         return Settings("", debug = false, hardwareAcceleration = false)
     }
 
     fun readSettings() : Settings{
-        val file = File(Utils.getLocalFile("settings.json"))
-        val gson = Gson()
-        println("Reading settings, file exists: " + file.exists() + " path:" + file.absolutePath)
+        val file = Utils.getLocalFile("settings.json")
         if(Logger.isInitialized()){
             Logger.message("Settings manager", "Do file exist: ", file.exists())
-            Logger.message("Settings Manager", "Absolute Path:", file.absolutePath)
+            Logger.message("Settings Manager", "Absolute Path:", file.absolutePathString())
         }
 
         if (!file.exists()){
             writeSettings(getDefaultSettings())
+            return getDefaultSettings()
         }
+
         try {
-            val reader = FileReader(file.absolutePath.replace("%20", " "), Charsets.UTF_8)
-            val read = reader.readText()
-            if (Logger.isInitialized())
-                Logger.message("Settings manager","Current config:", read)
-            return gson.fromJson(read, Settings::class.java)
-        } catch (e: Exception) {
+            return parseSettings(file.readText());
+        }catch (e: Exception){
             e.printStackTrace()
         }
         return getDefaultSettings()
     }
 
     private fun writeSettings(settings: Settings){
-        val gson = Gson()
-        val json = gson.toJson(settings)
+        val file = Utils.getLocalFile("settings.json")
         try {
-            val file = File(Utils.getLocalFile("settings.json"))
-            if (!file.exists())
-                file.createNewFile()
-            val fileWriter = FileWriter(file.absolutePath.replace("%20", " "), Charsets.UTF_8)
-            fileWriter.flush()
-            fileWriter.append(json)
-            fileWriter.close()
-        }catch (e:Exception){
+            file.deleteIfExists()
+            file.createFile()
+            file.writeText(serializeObject(settings))
+        }catch (e:Exception) {
             e.printStackTrace()
         }
     }
@@ -64,41 +55,39 @@ class SettingsManager {
     }
 
     fun savePreset(preset: Preset, name: String){
-        val gson = Gson()
-        val json = gson.toJson(preset)
-        try {
-            Logger.message("File IO", "Trying to work with file: user_presets/$name.json")
-            File(Utils.getLocalFile("user_presets")).mkdirs()
-            val file = File(Utils.getLocalFile("user_presets") + "\\$name.json")
-            if (!file.exists()) {
-                file.createNewFile()
-            }
-            val fileWriter = FileWriter(file)
-            fileWriter.flush()
-            fileWriter.append(json)
-            fileWriter.close()
-        }catch (e:Exception){
-            e.printStackTrace()
-        }
+        val file = Utils.getLocalFile("user_presets/$name.json")
+        file.createParentDirectories()
+        file.deleteIfExists()
+        file.createFile()
+        file.writeText(serializeObject(preset))
     }
 
-    fun loadPreset(name:String) : Preset{
-        val file = File(Utils.getLocalFile("user_presets") + File.separator +"$name.json")
+    private fun parseSettings(data:String):Settings{
+        return Gson().fromJson(data, Settings::class.java)
+    }
+    private fun parsePreset(data:String):Preset{
+        return Gson().fromJson(data, Preset::class.java)
+    }
+
+    private fun serializeObject(o: Any): String{
         val gson = Gson()
+        return gson.toJson(o)
+    }
+
+    private fun loadPreset(name:String) : Preset{
+        val file = Path.of(Utils.getLocalFile("user_presets").absolutePathString(), "$name.json")
         try {
-            val reader = FileReader(file.absolutePath.replace("%20", " "), Charsets.UTF_8)
-            val read = reader.readText()
-            Logger.debugLog("Loading Presets", read)
-            return gson.fromJson(read, Preset::class.java)
+            return parsePreset(file.readText())
         } catch (e: Exception) {
             e.printStackTrace()
         }
         return StandardPresets().fullHd60fpsLIBX265
     }
 
+    @OptIn(ExperimentalPathApi::class)
     fun loadPresetsFromFolder(){
         try {
-            File(Utils.getLocalFile("user_presets") + File.separator).walk().forEach {
+            Utils.getLocalFile("user_presets" + File.separator).walk().forEach {
                 PresetRegistry.register(loadPreset(it.name.dropLast(5)))
             }
         }catch (e:Exception){

@@ -8,6 +8,7 @@ import javafx.stage.Window;
 import me.codeflusher.easy_compress.MainApp;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import static javafx.scene.control.Alert.AlertType;
 
@@ -55,8 +56,8 @@ public class Utils {
         return builder.toString();
     }
 
-    public static String getLocalFile(String name){
-        return MainApp.Companion.getCurrentFolder() + File.separator + name;
+    public static Path getLocalFile(String name){
+        return Path.of(MainApp.Companion.getCurrentFolder(), name);
     }
 
 }

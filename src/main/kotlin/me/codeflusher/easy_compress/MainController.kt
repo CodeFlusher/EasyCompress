@@ -199,9 +199,9 @@ class MainController : Initializable {
         manager.saveHWAcceleration(localHWAccelerationCheckBox.isSelected)
     }
 
-    public fun verifyFields() : Boolean{
+    private fun verifyFields() : Boolean{
 
-        var fileInputPath = localFilePathTextField.text
+        val fileInputPath = localFilePathTextField.text
         if (!File(fileInputPath).isAbsolute){
             Utils.showUserDialog("File path is invalid.", AlertType.WARNING)
             return false
@@ -301,8 +301,8 @@ class MainController : Initializable {
             return
         }
 
-        var ffmpegPath = settingsFFmpegPathTextFieldLocal.text + "/ffmpeg.exe"
-        var ffmprobePath = settingsFFmpegPathTextFieldLocal.text + "/ffprobe.exe"
+        val ffmpegPath = settingsFFmpegPathTextFieldLocal.text + "/ffmpeg.exe"
+        val ffmprobePath = settingsFFmpegPathTextFieldLocal.text + "/ffprobe.exe"
 
         println(ffmpegPath)
         println(ffmprobePath)
@@ -326,10 +326,10 @@ class MainController : Initializable {
             }
         }
 
-        var builder: FFmpegBuilder = FFmpegBuilder()
+        val builder: FFmpegBuilder = FFmpegBuilder()
         if (localHWAccelerationCheckBox.isSelected)
             builder.addExtraArgs("-hwaccel", "cuda")
-        var output_builder = builder
+        val outputBuilder = builder
             .setInput(localFilePathTextField.text) // Filename, or a FFmpegProbeResult
             .overrideOutputFiles(localOverrideFileCheckBox.isSelected) // Override the output if it exists
             .addOutput(localPathToFolderTextField.text + "/" + localFileNameTextField.text + "." + localEncodingChooseBoxFileFormat.value.type) // Filename for the destination
@@ -345,10 +345,10 @@ class MainController : Initializable {
             .setStrict(if (localExperimentalCheckBox.isSelected) FFmpegBuilder.Strict.EXPERIMENTAL else FFmpegBuilder.Strict.STRICT)
 
         if (!localSubtitlesCheckBox.isSelected){
-            output_builder.disableSubtitle()
+            outputBuilder.disableSubtitle()
         }
 
-        val finalBuilder = output_builder.done()
+        val finalBuilder = outputBuilder.done()
 
         Logger.debugLog("Command Line promt", ProcessBuilder(ffmpeg.path(finalBuilder.build())).command().toString())
 
@@ -365,7 +365,8 @@ class MainController : Initializable {
             job!!.run()
 
         }
-        thread.setUncaughtExceptionHandler { thread, exception ->
+
+        thread.setUncaughtExceptionHandler { _, exception ->
             run {
                 exception.stackTrace.forEach {
                     Logger.message("Error", it)
@@ -380,7 +381,7 @@ class MainController : Initializable {
                 if (job == null){
                     continue
                 }
-                Logger.message("Processing", job!!.state)
+                Logger.debugLog("Processing", job!!.state)
                 when(job!!.state){
                     FFmpegJob.State.WAITING -> {
                         startProcessing()
@@ -468,9 +469,9 @@ class MainController : Initializable {
     }
 
     private fun registerEvents(){
-        settingsFFmpegPathTextFieldLocal.textProperty().addListener { observable, oldValue, newValue -> manager.saveFFMpeg(newValue) }
-        localHWAccelerationCheckBox.selectedProperty().addListener{observable, oldValue, newValue -> manager.saveHWAcceleration(newValue)}
-        localChooseBoxEncodingMethod.selectionModel.selectedIndexProperty().addListener{observable, old, new ->
+        settingsFFmpegPathTextFieldLocal.textProperty().addListener { _, _, newValue -> manager.saveFFMpeg(newValue) }
+        localHWAccelerationCheckBox.selectedProperty().addListener{ _, _, newValue -> manager.saveHWAcceleration(newValue)}
+        localChooseBoxEncodingMethod.selectionModel.selectedIndexProperty().addListener{ _, _, new ->
             run {
                 try {
                     val preset = PresetRegistry.findInRegistry(localChooseBoxEncodingMethod.items[new as Int])
@@ -482,7 +483,7 @@ class MainController : Initializable {
         }
     }
 
-    private fun registerChoiseBoxItems(){
+    private fun registerChooseBoxItems(){
         localEncodingChooseBoxFileFormat.items.addAll(VideoFileTypes.entries)
         localAudioCodecChooser.items.addAll(AudioCodecTypes.entries)
         localSampleRateChooser.items.addAll(SampleRates.entries)
@@ -530,7 +531,7 @@ class MainController : Initializable {
 
         registerEvents()
 
-        registerChoiseBoxItems()
+        registerChooseBoxItems()
 
         initializeData()
     }
