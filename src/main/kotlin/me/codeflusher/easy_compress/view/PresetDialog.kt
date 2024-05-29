@@ -18,31 +18,40 @@ import me.codeflusher.easy_compress.util.Logger
 class PresetDialog(owner: Window) : Dialog<PresetLink>() {
 
     @FXML
-    private lateinit var saveDialogPresetName :TextField
+    private lateinit var saveDialogPresetName: TextField
+
     @FXML
-    private lateinit var saveDialogFileName : TextField
+    private lateinit var saveDialogFileName: TextField
+
     @FXML
-    private lateinit var saveDialogSavePreset :Button
+    private lateinit var saveDialogSavePreset: Button
+
     @FXML
-    private lateinit var saveDialogPresetNameLocal :TextField
+    private lateinit var saveDialogPresetNameLocal: TextField
+
     @FXML
-    private lateinit var saveDialogFileNameLocal : TextField
+    private lateinit var saveDialogFileNameLocal: TextField
+
     @FXML
-    private lateinit var saveDialogSavePresetLocal :Button
+    private lateinit var saveDialogSavePresetLocal: Button
 
     private val connection: ObjectProperty<PresetLink?> = SimpleObjectProperty(null)
 
-    fun initLocals(){
-        saveDialogPresetNameLocal= saveDialogPresetName
-        saveDialogFileNameLocal= saveDialogFileName
+    private fun initLocals() {
+        saveDialogPresetNameLocal = saveDialogPresetName
+        saveDialogFileNameLocal = saveDialogFileName
         saveDialogSavePresetLocal = saveDialogSavePreset
 
     }
+
     @FXML
-    fun onSavePreset(){
+    fun onSavePreset() {
         Logger.message("Preset Dialog", "Caught save dialog button click")
-        Logger.message("Preset Dialog", "SaveDialogPresetNameLocal.text = " +saveDialogPresetNameLocal.text + "\n" + "SaveDialogFileNameLocal.text = " +saveDialogFileNameLocal.text)
-        if (saveDialogPresetNameLocal.text == "" || saveDialogFileNameLocal.text == ""){
+        Logger.message(
+            "Preset Dialog",
+            "SaveDialogPresetNameLocal.text = " + saveDialogPresetNameLocal.text + "\n" + "SaveDialogFileNameLocal.text = " + saveDialogFileNameLocal.text
+        )
+        if (saveDialogPresetNameLocal.text == "" || saveDialogFileNameLocal.text == "") {
             Logger.message("Preset Dialog", "Couldn't save the preset: invalid params")
             val alert = Alert(AlertType.INFORMATION)
             alert.title = "Error"
@@ -50,9 +59,13 @@ class PresetDialog(owner: Window) : Dialog<PresetLink>() {
             alert.contentText = "All text fields must be filled"
 
             alert.showAndWait()
-        }else{
+        } else {
             Logger.message("Preset Dialog", "Preset successfully saved")
-            (owner.userData as MainController).onSavePreset(saveDialogPresetNameLocal.text, saveDialogFileNameLocal.text, this)
+            (owner.userData as MainController).onSavePreset(
+                saveDialogPresetNameLocal.text,
+                saveDialogFileNameLocal.text,
+                this
+            )
         }
 
     }
@@ -77,7 +90,7 @@ class PresetDialog(owner: Window) : Dialog<PresetLink>() {
         }
 
         Logger.message("Preset Init", "Adding event handler")
-        saveDialogSavePresetLocal.addEventHandler(ActionEvent.ANY){
+        saveDialogSavePresetLocal.addEventHandler(ActionEvent.ANY) {
             onSavePreset()
         }
 

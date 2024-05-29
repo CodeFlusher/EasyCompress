@@ -19,36 +19,39 @@ import static javafx.scene.control.Alert.AlertType;
  */
 public class Utils {
 
-    public static boolean askYesNoDialog(String title,String question){
+    public static boolean askYesNoDialog(String title, String question) {
         var alert = new Alert(AlertType.CONFIRMATION, question);
         alert.setTitle(title);
         var result = alert.showAndWait().orElse(ButtonType.CANCEL);
         Logger.log("Utils", "Permission ask result", result);
         return result.equals(ButtonType.OK) || result.equals(ButtonType.YES) || result.equals(ButtonType.APPLY);
     }
-    public static ButtonType askChooseDialog(String title,String question, ButtonType... types){
+
+    public static ButtonType askChooseDialog(String title, String question, ButtonType... types) {
         var alert = new Alert(AlertType.CONFIRMATION, question, types);
         alert.setTitle(title);
         var result = alert.showAndWait().orElse(ButtonType.CANCEL);
         Logger.log("Utils", "Permission ask result", result);
         return result;
     }
-    public static void showUserDialog(String message, AlertType type){
+
+    public static void showUserDialog(String message, AlertType type) {
         new Alert(type, message).show();
     }
 
-    public static File openDialogForDirectory(Window window){
-        Logger.debugLog("FXML Action","Choosing output folder");
+    public static File openDialogForDirectory(Window window) {
+        Logger.debugLog("FXML Action", "Choosing output folder");
         var fileChooser = new DirectoryChooser();
         return fileChooser.showDialog(window);
     }
-    public static File openDialogForFile(Window window){
-        Logger.debugLog("FXML Action","Choosing output folder");
+
+    public static File openDialogForFile(Window window) {
+        Logger.debugLog("FXML Action", "Choosing output folder");
         var fileChooser = new FileChooser();
         return fileChooser.showOpenDialog(window);
     }
 
-    public static String createPath(String... objects){
+    public static String createPath(String... objects) {
         StringBuilder builder = new StringBuilder();
         for (String object : objects) {
             builder.append(File.separator).append(object);
@@ -56,7 +59,7 @@ public class Utils {
         return builder.toString();
     }
 
-    public static Path getLocalFile(String name){
+    public static Path getLocalFile(String name) {
         return Path.of(MainApp.Companion.getCurrentFolder(), name);
     }
 

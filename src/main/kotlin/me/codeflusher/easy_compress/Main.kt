@@ -10,8 +10,6 @@ import me.codeflusher.easy_compress.data_save.StandardPresets
 import me.codeflusher.easy_compress.util.Logger
 import me.codeflusher.easy_compress.util.Utils
 import java.io.File
-import java.net.URI
-import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.path.*
 import kotlin.properties.Delegates
@@ -20,16 +18,16 @@ import kotlin.properties.Delegates
 class MainApp : Application() {
 
 
-    fun initializeSetup(stage: Stage){
+    fun initializeSetup(stage: Stage) {
         initialize(stage, "installation_dialog.fxml")
     }
 
-    private fun initializeApplication(stage: Stage){
+    private fun initializeApplication(stage: Stage) {
         StandardPresets()
         initialize(stage, "main.fxml")
     }
 
-    private fun initialize(stage: Stage, path: String){
+    private fun initialize(stage: Stage, path: String) {
 
         val fxmlLoader = FXMLLoader(MainApp::class.java.getResource(path))
         val xml = fxmlLoader.load<Parent>()
@@ -37,7 +35,7 @@ class MainApp : Application() {
         initializeApplicationData(stage, scene)
     }
 
-    private fun initializeApplicationData(stage: Stage, scene: Scene){
+    private fun initializeApplicationData(stage: Stage, scene: Scene) {
         stage.isResizable = false
         stage.title = "FFMpeg Tool"
         stage.scene = scene
@@ -51,18 +49,25 @@ class MainApp : Application() {
         stage.show()
     }
 
-    companion object{
+    companion object {
         @JvmStatic
-        val currentJavaFile: String = Paths.get(Companion::class.java.protectionDomain.codeSource.location.path.drop(1)).absolutePathString().replace("%20"," ")
+        val currentJavaFile: String =
+            Paths.get(Companion::class.java.protectionDomain.codeSource.location.path.drop(1)).absolutePathString()
+                .replace("%20", " ")
+
         @JvmStatic
-        val currentFolder: String = Paths.get(Companion::class.java.protectionDomain.codeSource.location.path.drop(1)).parent.absolutePathString().replace("%20"," ")
+        val currentFolder: String =
+            Paths.get(Companion::class.java.protectionDomain.codeSource.location.path.drop(1)).parent.absolutePathString()
+                .replace("%20", " ")
+
         @JvmStatic
         val javaPath: String = System.getProperty("java.home").plus(File.separator).plus("bin")
+
         @JvmStatic
         var skipInstallation: Boolean by Delegates.notNull<Boolean>()
 
         @JvmStatic
-        fun isLoadingFromInstallationFolder() : Boolean {
+        fun isLoadingFromInstallationFolder(): Boolean {
             return Utils.getLocalFile("installationFolder.info").exists()
         }
     }
@@ -73,21 +78,22 @@ class MainApp : Application() {
 @OptIn(ExperimentalPathApi::class)
 fun main(args: Array<String>) {
 
-    if (args.contains("iconInstallation")){
-        val command = "\""+MainApp.javaPath.plus(File.separator).plus("jar.exe")+"\"" +" -xf " +"\""+ MainApp.currentJavaFile +"\""+ " me/codeflusher/easy_compress/icon.ico"
+    if (args.contains("iconInstallation")) {
+        val command = "\"" + MainApp.javaPath.plus(File.separator)
+            .plus("jar.exe") + "\"" + " -xf " + "\"" + MainApp.currentJavaFile + "\"" + " me/codeflusher/easy_compress/icon.ico"
 
         println(command)
         val process = Runtime.getRuntime().exec(command)
 
-        while (process.isAlive){
-            try{
+        while (process.isAlive) {
+            try {
                 Thread.sleep(100)
-            } catch (_: Exception){
+            } catch (_: Exception) {
 
             }
         }
 
-        val iconFile = Paths.get(MainApp.currentFolder, "me", "codeflusher","easy_compress","icon.ico")
+        val iconFile = Paths.get(MainApp.currentFolder, "me", "codeflusher", "easy_compress", "icon.ico")
         val generatedFolder = Paths.get(MainApp.currentFolder, "me")
 
         iconFile.copyTo(Paths.get(MainApp.currentFolder, "icon.ico"))

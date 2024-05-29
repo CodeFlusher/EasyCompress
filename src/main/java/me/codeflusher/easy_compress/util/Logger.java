@@ -13,7 +13,7 @@ public class Logger {
 
     }
 
-    public static boolean isInitialized(){
+    public static boolean isInitialized() {
         return logRunnable != null;
     }
 
@@ -79,10 +79,12 @@ public class Logger {
     interface LogRunnable {
         void run(String namespace, Object... message);
     }
-    public static void message(String namespace, Object... objects){
+
+    public static void message(String namespace, Object... objects) {
         log(namespace, objects);
     }
-    public static void message(String namespace, Object objects){
+
+    public static void message(String namespace, Object objects) {
         log(namespace, objects);
     }
 

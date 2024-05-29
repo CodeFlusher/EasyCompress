@@ -4,104 +4,123 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<TitledPane animated="false" collapsible="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" text="Installation" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.codeflusher.easy_compress.view.InstallationDialog">
-  <content>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="302.0" prefWidth="598.0">
-         <children>
-            <VBox prefHeight="361.0" prefWidth="600.0">
-               <children>
-                  <HBox prefWidth="200.0">
-                     <children>
-                        <Label text="Path for installation">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <Label alignment="BOTTOM_LEFT" text="Chosen path must lead to empty folder">
-                           <HBox.margin>
-                              <Insets left="12.0" top="8.0" />
-                           </HBox.margin>
-                           <opaqueInsets>
-                              <Insets />
-                           </opaqueInsets>
-                        </Label>
-                     </children>
-                     <VBox.margin>
-                        <Insets left="12.0" right="12.0" top="12.0" />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox prefHeight="54.0" prefWidth="600.0">
-                     <children>
-                        <TextField fx:id="setupInstallationPath" onDragDone="#onFolderDragNDropped" onDragDropped="#onFolderDragNDropped" prefHeight="29.0" prefWidth="470.0" promptText="Path">
-                           <HBox.margin>
-                              <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
-                           </HBox.margin>
-                        </TextField>
-                        <Button fx:id="encodingButtonChooseFile" mnemonicParsing="false" onAction="#onChooseFolderAction" prefHeight="29.0" prefWidth="140.0" text="Choose folder">
-                           <HBox.margin>
-                              <Insets right="12.0" top="12.0" />
-                           </HBox.margin>
-                        </Button>
-                     </children>
-                  </HBox>
-                  <TitledPane collapsible="false" prefHeight="145.0" prefWidth="576.0" text="App Settings">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <children>
-                              <VBox prefHeight="91.0" prefWidth="576.0">
-                                 <children>
-                                    <HBox prefHeight="12.0" prefWidth="576.0">
-                                       <children>
-                                          <Label prefHeight="27.0" prefWidth="158.0" text="Path to FFMpeg">
-                                             <font>
-                                                <Font size="18.0" />
-                                             </font>
-                                          </Label>
-                                          <TextField fx:id="setupFFmpegPath" prefHeight="27.0" prefWidth="350.0" promptText="Find folder called 'bin', containing ffmpeg.exe and ffprobe.exe" />
-                                          <Button mnemonicParsing="false" onAction="#onFildManuallyFFmpeg" prefHeight="29.0" prefWidth="106.0" text="Locate" />
-                                       </children>
-                                       <VBox.margin>
-                                          <Insets left="12.0" right="12.0" top="12.0" />
-                                       </VBox.margin>
-                                    </HBox>
-                                    <CheckBox fx:id="setupUseHWAcceleration" mnemonicParsing="false" prefHeight="25.0" prefWidth="558.0" text="Use Hardware Acceleration (May not be supported by your GPU or cause issues while encoding)">
-                                       <VBox.margin>
-                                          <Insets left="12.0" right="12.0" top="12.0" />
-                                       </VBox.margin>
-                                    </CheckBox>
-                                 </children>
-                              </VBox>
-                           </children>
-                        </AnchorPane>
-                    </content>
-                     <VBox.margin>
-                        <Insets left="12.0" right="12.0" top="12.0" />
-                     </VBox.margin>
-                  </TitledPane>
-                  <CheckBox fx:id="setupCreateShortcut" mnemonicParsing="false" prefWidth="291.0" text="Add shortcut to Desktop">
-                     <VBox.margin>
-                        <Insets left="12.0" right="12.0" top="12.0" />
-                     </VBox.margin>
-                  </CheckBox>
-                  <CheckBox fx:id="setupCreateFolder" mnemonicParsing="false" prefWidth="294.0" text="Create folder in start">
-                     <VBox.margin>
-                        <Insets left="12.0" right="12.0" top="12.0" />
-                     </VBox.margin>
-                  </CheckBox>
-                  <HBox prefHeight="75.0" prefWidth="576.0">
-                     <VBox.margin>
-                        <Insets left="12.0" right="12.0" top="12.0" />
-                     </VBox.margin>
-                     <children>
-                        <Button mnemonicParsing="false" onAction="#onInstall" prefHeight="29.0" prefWidth="364.0" text="Install" />
-                        <Button mnemonicParsing="false" onAction="#onSkip" prefHeight="29.0" prefWidth="356.0" text="Skip for now" />
-                     </children>
-                  </HBox>
-               </children>
-            </VBox>
-         </children></AnchorPane>
-  </content>
-   <font>
-      <Font name="System Bold" size="18.0" />
-   </font>
+<TitledPane animated="false" collapsible="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" text="Installation"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="me.codeflusher.easy_compress.view.InstallationDialog">
+    <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="302.0" prefWidth="598.0">
+            <children>
+                <VBox prefHeight="361.0" prefWidth="600.0">
+                    <children>
+                        <HBox prefWidth="200.0">
+                            <children>
+                                <Label text="Path for installation">
+                                    <font>
+                                        <Font size="20.0"/>
+                                    </font>
+                                </Label>
+                                <Label alignment="BOTTOM_LEFT" text="Chosen path must lead to empty folder">
+                                    <HBox.margin>
+                                        <Insets left="12.0" top="8.0"/>
+                                    </HBox.margin>
+                                    <opaqueInsets>
+                                        <Insets/>
+                                    </opaqueInsets>
+                                </Label>
+                            </children>
+                            <VBox.margin>
+                                <Insets left="12.0" right="12.0" top="12.0"/>
+                            </VBox.margin>
+                        </HBox>
+                        <HBox prefHeight="54.0" prefWidth="600.0">
+                            <children>
+                                <TextField fx:id="setupInstallationPath" onDragDone="#onFolderDragNDropped"
+                                           onDragDropped="#onFolderDragNDropped" prefHeight="29.0" prefWidth="470.0"
+                                           promptText="Path">
+                                    <HBox.margin>
+                                        <Insets bottom="12.0" left="12.0" right="12.0" top="12.0"/>
+                                    </HBox.margin>
+                                </TextField>
+                                <Button fx:id="encodingButtonChooseFile" mnemonicParsing="false"
+                                        onAction="#onChooseFolderAction" prefHeight="29.0" prefWidth="140.0"
+                                        text="Choose folder">
+                                    <HBox.margin>
+                                        <Insets right="12.0" top="12.0"/>
+                                    </HBox.margin>
+                                </Button>
+                            </children>
+                        </HBox>
+                        <TitledPane collapsible="false" prefHeight="145.0" prefWidth="576.0"
+                                    text="Optional App Settings (Can be changed later)">
+                            <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                    <children>
+                                        <VBox prefHeight="91.0" prefWidth="576.0">
+                                            <children>
+                                                <HBox prefHeight="12.0" prefWidth="576.0">
+                                                    <children>
+                                                        <Label prefHeight="27.0" prefWidth="158.0"
+                                                               text="Path to FFMpeg">
+                                                            <font>
+                                                                <Font size="18.0"/>
+                                                            </font>
+                                                        </Label>
+                                                        <TextField fx:id="setupFFmpegPath" prefHeight="27.0"
+                                                                   prefWidth="350.0"
+                                                                   promptText="Find folder called 'bin', containing ffmpeg.exe and ffprobe.exe"/>
+                                                        <Button mnemonicParsing="false" onAction="#onFildManuallyFFmpeg"
+                                                                prefHeight="29.0" prefWidth="106.0" text="Locate"/>
+                                                    </children>
+                                                    <VBox.margin>
+                                                        <Insets left="12.0" right="12.0" top="12.0"/>
+                                                    </VBox.margin>
+                                                </HBox>
+                                                <CheckBox fx:id="setupUseHWAcceleration" mnemonicParsing="false"
+                                                          prefHeight="25.0" prefWidth="558.0"
+                                                          text="Use Hardware Acceleration (May not be supported by your GPU or cause issues while encoding)">
+                                                    <VBox.margin>
+                                                        <Insets left="12.0" right="12.0" top="12.0"/>
+                                                    </VBox.margin>
+                                                </CheckBox>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                            <VBox.margin>
+                                <Insets left="12.0" right="12.0" top="12.0"/>
+                            </VBox.margin>
+                        </TitledPane>
+                        <CheckBox fx:id="setupCreateShortcut" mnemonicParsing="false" prefWidth="291.0"
+                                  text="Add shortcut to Desktop">
+                            <VBox.margin>
+                                <Insets left="12.0" right="12.0" top="12.0"/>
+                            </VBox.margin>
+                        </CheckBox>
+                        <CheckBox fx:id="setupCreateFolder" mnemonicParsing="false" prefWidth="294.0"
+                                  text="Create folder in start">
+                            <VBox.margin>
+                                <Insets left="12.0" right="12.0" top="12.0"/>
+                            </VBox.margin>
+                        </CheckBox>
+                        <HBox prefHeight="75.0" prefWidth="576.0">
+                            <VBox.margin>
+                                <Insets left="12.0" right="12.0" top="12.0"/>
+                            </VBox.margin>
+                            <children>
+                                <Button mnemonicParsing="false" onAction="#onInstall" prefHeight="29.0"
+                                        prefWidth="364.0" text="Install"/>
+                                <Button mnemonicParsing="false" onAction="#onSkip" prefHeight="29.0" prefWidth="356.0"
+                                        text="Skip for now"/>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+            </children>
+        </AnchorPane>
+    </content>
+    <font>
+        <Font name="System Bold" size="18.0"/>
+    </font>
 </TitledPane>
